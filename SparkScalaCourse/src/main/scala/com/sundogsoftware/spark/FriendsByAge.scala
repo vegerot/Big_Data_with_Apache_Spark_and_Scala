@@ -37,7 +37,9 @@ object FriendsByAge {
     // We use mapValues to convert each numFriends value to a tuple of (numFriends, 1)
     // Then we use reduceByKey to sum up the total numFriends and total instances for each age, by
     // adding together all the numFriends values and 1's respectively.
-    val totalsByAge = rdd.mapValues(x => (x, 1)).reduceByKey( (x,y) => (x._1 + y._1, x._2 + y._2))
+    val totalsByAge = rdd
+      .mapValues(x => (x, 1))
+      .reduceByKey( (x,y) => (x._1 + y._1, x._2 + y._2))
     
     // So now we have tuples of (age, (totalFriends, totalInstances))
     // To compute the average we divide totalFriends / totalInstances for each age.

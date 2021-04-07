@@ -23,6 +23,7 @@ object RatingsCounter {
     val ratings = lines.map(x => x.split("\t")(2))
     
     // Count up how many times each value (rating) occurs
+    // q(max): how can I count by value but still return an RDD?  Then I can do the sorting in Spark instead of Scala
     val results = ratings.countByValue()
     
     // Sort the resulting map of (rating, count) tuples

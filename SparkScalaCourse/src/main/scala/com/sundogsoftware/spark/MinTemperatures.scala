@@ -18,7 +18,7 @@ object MinTemperatures {
   def main(args: Array[String]) {
    
     // Set the log level to only print errors
-    Logger.getLogger("org").setLevel(Level.ERROR)
+    // Logger.getLogger("org").setLevel(Level.ERROR)
     
     // Create a SparkContext using every core of the local machine
     val sc = new SparkContext("local[*]", "MinTemperatures")
