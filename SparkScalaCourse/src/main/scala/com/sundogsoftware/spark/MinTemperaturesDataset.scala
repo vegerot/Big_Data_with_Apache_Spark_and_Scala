@@ -34,7 +34,7 @@ object MinTemperaturesDataset {
     val ds = spark.read
       .schema(temperatureSchema)
       .csv("data/1800.csv")
-      .as[Temperature](newProductEncoder(TypeTag))
+      .as[Temperature](newProductEncoder)
 
     // import org.apache.spark.sql.catalyst.dsl.expressions.{DslExpression, StringToAttributeConversionHelper}
     // Filter out all but TMIN entries

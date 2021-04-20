@@ -10,10 +10,10 @@ object MostPopularSuperheroDataset {
 
   case class SuperHeroNames(id: Int, name: String)
   case class SuperHero(value: String)
- 
+
   /** Our main function where the action happens */
   def main(args: Array[String]) {
-   
+
     // Set the log level to only print errors
     Logger.getLogger("org").setLevel(Level.ERROR)
 
@@ -47,14 +47,22 @@ object MostPopularSuperheroDataset {
       .groupBy("id").agg(sum("connections").alias("connections"))
 
     val mostPopular = connections
-        .sort($"connections".desc)
-        .first()
+      .sort($"connections".desc)
+      .limit(10)
+      .join(names, connections("id")===names("id") )
+      .sort($"connections".desc)
+      .show()
 
+
+
+    /**
     val mostPopularName = names
+      // just get first
       .filter($"id" === mostPopular(0))
       .select("name")
       .first()
+    */
 
-    println(s"${mostPopularName(0)} is the most popular superhero with ${mostPopular(1)} co-appearances.")
+    /**println(s"${mostPopularName(0)} is the most popular superhero with ${mostPopular(1)} co-appearances.")*/
   }
 }
