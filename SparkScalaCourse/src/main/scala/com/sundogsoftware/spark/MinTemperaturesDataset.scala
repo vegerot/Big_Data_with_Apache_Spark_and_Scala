@@ -12,7 +12,7 @@ object MinTemperaturesDataset {
 
   /** Our main function where the action happens */
   def main(args: Array[String]) {
-   
+
     // Set the log level to only print errors
     Logger.getLogger("org").setLevel(Level.ERROR)
 
@@ -34,14 +34,15 @@ object MinTemperaturesDataset {
     val ds = spark.read
       .schema(temperatureSchema)
       .csv("data/1800.csv")
-      .as[Temperature]
-    
+      .as[Temperature](newProductEncoder(TypeTag))
+
+    // import org.apache.spark.sql.catalyst.dsl.expressions.{DslExpression, StringToAttributeConversionHelper}
     // Filter out all but TMIN entries
     val minTemps = ds.filter($"measure_type" === "TMIN")
-    
+
     // Select only stationID and temperature)
     val stationTemps = minTemps.select("stationID", "temperature")
-    
+
     // Aggregate to find minimum temperature for every station
     val minTempsByStation = stationTemps.groupBy("stationID").min("temperature")
 
@@ -52,7 +53,7 @@ object MinTemperaturesDataset {
 
     // Collect, format, and print the results
     val results = minTempsByStationF.collect()
-    
+
     for (result <- results) {
        val station = result(0)
        val temp = result(1).asInstanceOf[Float]
