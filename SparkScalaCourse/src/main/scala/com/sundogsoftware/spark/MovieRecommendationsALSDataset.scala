@@ -1,7 +1,7 @@
 package com.sundogsoftware.spark
 
 import org.apache.log4j._
-import org.apache.spark.ml.recommendation._
+import org.apache.spark.ml.recommendation.ALS
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types.{IntegerType, LongType, StringType, StructType}
 
@@ -21,10 +21,10 @@ object MovieRecommendationsALSDataset {
   }
   /** Our main function where the action happens */
   def main(args: Array[String]) {
-    
+
     // Set the log level to only print errors
     Logger.getLogger("org").setLevel(Level.ERROR)
-    
+
     // Make a session
     val spark = SparkSession
       .builder
@@ -32,7 +32,7 @@ object MovieRecommendationsALSDataset {
       .master("local[*]")
       .getOrCreate()
 
-    
+
     println("Loading movie names...")
     // Create schema when reading u.item
     val moviesNamesSchema = new StructType()
@@ -64,24 +64,24 @@ object MovieRecommendationsALSDataset {
       .schema(moviesSchema)
       .csv("data/ml-100k/u.data")
       .as[Rating]
-    
+
     // Build the recommendation model using Alternating Least Squares
     println("\nTraining recommendation model...")
-    
+
     val als = new ALS()
       .setMaxIter(5)
       .setRegParam(0.01)
       .setUserCol("userID")
       .setItemCol("movieID")
       .setRatingCol("rating")
-    
+
     val model = als.fit(ratings)
-      
+
     // Get top-10 recommendations for the user we specified
     val userID:Int = args(0).toInt
     val users = Seq(userID).toDF("userID")
     val recommendations = model.recommendForUserSubset(users, 10)
-    
+
     // Display them (oddly, this is the hardest part!)
     println("\nTop 10 recommendations for user ID " + userID + ":")
 
@@ -95,7 +95,7 @@ object MovieRecommendationsALSDataset {
         println(movieName, rating)
       }
     }
-    
+
     // Stop the session
     spark.stop()
 
