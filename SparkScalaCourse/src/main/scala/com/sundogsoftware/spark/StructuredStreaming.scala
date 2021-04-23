@@ -1,8 +1,8 @@
 package com.sundogsoftware.spark
 
 import org.apache.log4j._
-import org.apache.spark.sql._
-import org.apache.spark.sql.functions._
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.{col, regexp_extract}
 
 /** Find the movies with the most ratings. */
 object StructuredStreaming {
@@ -10,7 +10,7 @@ object StructuredStreaming {
 
   /** Our main function where the action happens */
   def main(args: Array[String]) {
-   
+
     // Set the log level to only print errors
     Logger.getLogger("org").setLevel(Level.ERROR)
 
@@ -51,6 +51,6 @@ object StructuredStreaming {
     // Stop the session
     spark.stop()
   }
-  
+
 }
 
